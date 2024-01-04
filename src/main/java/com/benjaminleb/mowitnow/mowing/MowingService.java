@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +23,7 @@ public class MowingService {
 
     public String launchMowing(String instructions){
         MowingPlan mowingPlan = MowingPlanParser.fromInstructions(instructions);
-        Garden garden = initFromMowingPlan(mowingPlan);
+        Garden garden = Garden.fromPlan(mowingPlan);
         for(int i = 0; i < mowingPlan.getMowerPlans().size(); i++) {
             String[] mowerMovementInstructions = mowingPlan.getMowerPlans().get(i).getMovementInstructions().split("");
             for(String instruction : mowerMovementInstructions) {
@@ -49,11 +48,4 @@ public class MowingService {
         }
     }
 
-    private Garden initFromMowingPlan(MowingPlan mowingPlan) {
-        List<Mower> mowers = mowingPlan.getMowerPlans()
-                .stream()
-                .map(Mower::fromPlan)
-                .collect(Collectors.toList());
-        return Garden.fromPlan(mowingPlan);
-    }
 }
